@@ -41,6 +41,12 @@ public class ControladorServlet extends HttpServlet {
                 case "postular":
                     ingresarPostulacion(request,response);
                     break;
+                case "crearOferta":
+                    crearOferta(request,response);
+                    break;
+                case "cerrarOferta":
+                    cerrarOferta(request,response);
+                    break;
                     
                 case "cambiaDatos":
                     guardaPerfil(request, response);
@@ -143,6 +149,69 @@ public class ControladorServlet extends HttpServlet {
             
             request.setAttribute("msg",msg);
             request.getRequestDispatcher("mensaje.jsp").forward(request,response);
+            
+    }
+    
+    protected void crearOferta(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+            String codigo=request.getParameter("codigo");
+            String titulo = request.getParameter("titulo");
+            String descripcion = request.getParameter("descripcion");
+
+            int numCode = 0;
+            
+            
+            //Comprobamos que codigo sea un integer
+            try {
+                numCode = Integer.parseInt( codigo );
+            }
+            catch( NumberFormatException e ) {
+                request.setAttribute("msg","El codigo debe ser un numero.");
+                request.getRequestDispatcher("nuevaoferta.jsp").forward(request,response);
+                return;
+            }
+            if (titulo.isEmpty() || codigo.isEmpty() || descripcion.isEmpty()){
+                request.setAttribute("msg","Debes rellenar todos los campos.");
+                request.getRequestDispatcher("nuevaoferta.jsp").forward(request,response);
+                return;
+            }
+            
+            Oferta ofer = new Oferta(numCode, titulo, descripcion, true);
+            if(servicio.crearOferta(ofer)){
+                request.setAttribute("msg","Oferta creada exitosamente");
+            }
+            else{
+                request.setAttribute("msg","Ha ocurrido un error al crear la oferta.");
+            }
+            request.getRequestDispatcher("nuevaoferta.jsp").forward(request,response);
+            
+    }
+    
+        protected void cerrarOferta(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+            String codigo=request.getParameter("codigo");
+            String titulo = request.getParameter("titulo");
+            String descripcion = request.getParameter("descripcion");
+            int numCode = 0;
+
+            try {
+                numCode = Integer.parseInt( codigo );
+            }
+            catch( NumberFormatException e ) {
+                 request.setAttribute("msg","Ha ocurrido un error al cerrar la oferta.codigo: "+codigo+" error: "+e);
+                request.getRequestDispatcher("cerraroferta2.jsp?codigo="+codigo+"&titulo="+titulo+"&descripcion="+descripcion).forward(request,response);
+                return;
+            }
+         
+            
+            if(servicio.cerrarOferta(numCode)){
+                request.getRequestDispatcher("cerraroferta.jsp").forward(request,response);
+            }
+            else{
+                request.setAttribute("msg","Ha ocurrido un error al cerrar la oferta.");
+                request.getRequestDispatcher("cerraroferta2.jsp?codigo="+codigo+"&titulo="+titulo+"&descripcion="+descripcion).forward(request,response);
+            }
+            
             
     }
     

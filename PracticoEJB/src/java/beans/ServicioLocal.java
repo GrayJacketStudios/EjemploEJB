@@ -37,6 +37,8 @@ public interface ServicioLocal {
 
     String addPostulante(Postulante postulante);
 
+    ArrayList<Oferta> getAllOfertas();
+
     
     
 }

@@ -91,6 +91,7 @@ public class Servicio implements ServicioLocal {
         }
         return tmp;
     }
+    
 
     @Override
     public ArrayList<Postulante> getPostulantes() {
@@ -142,6 +143,11 @@ public class Servicio implements ServicioLocal {
             msg="El postulante ya existe";
         }
         return msg;
+    }
+
+    @Override
+    public ArrayList<Oferta> getAllOfertas() {
+        return ofertas;
     }
     
     
